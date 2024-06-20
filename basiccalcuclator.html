@@ -1,0 +1,29 @@
+<input id="num1" type="number">
+<select id="operator">
+<option value="add">+</option>
+<option value="sub">-</option>
+<option value="mul">*</option>
+<option value="div">/</option>
+</select>
+<input type="number" id="num2">
+
+<button onclick="Calcuclate()">Calcuclate</button>
+<p> result: <span id="result">0</span></p>
+
+<script>
+    function Calcuclate(){
+        const num1 = parseFloat (document.getElementById('num1').value);
+        const num2 = parseFloat (document.getElementById('num2').value);
+        const operator = document.getElementById('operator').value;
+        let result;
+
+        switch(operator){
+            case 'add': result = num1 + num2; break;
+            case 'sub': result = num1 - num2; break;
+            case 'mul': result = num1 * num2; break;
+            case 'div': result = num1 / num2; break;
+            default : result = 0;
+        }
+        document.getElementById('result').textContent=result;
+    }
+</script>

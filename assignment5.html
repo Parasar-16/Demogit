@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <style>
+    table, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 40px;
+    }
+    .number:hover {
+            background-color: burlywood;
+        }
+    </style>
+    </head>
+    <body>
+        <center>
+            <table>
+                <tr>
+                    <td class="number" id="number1" draggable="true" ondragstart="drag(event)">1</td>
+                    <td class="number" id="number2" draggable="true" ondragstart="drag(event)">2</td>
+                    <td class="number" id="number3" draggable="true" ondragstart="drag(event)">3</td>
+                </tr>
+                <tr>
+                    <td class="number" id="number4" draggable="true" ondragstart="drag(event)">4</td>
+                    <td class="number" id="number5" draggable="true" ondragstart="drag(event)">5</td>
+                    <td class="number" id="number6" draggable="true" ondragstart="drag(event)">6</td>
+                </tr>
+                <tr>
+                    <td class="number" id="number7" draggable="true" ondragstart="drag(event)">7</td>
+                    <td class="number" id="number8" draggable="true" ondragstart="drag(event)">8</td>
+                    <td class="number" id="number9" draggable="true" ondragstart="drag(event)">9</td>
+                </tr>
+            </table>
+        </center>
+        <script>
+            let dragSrcElement = null;
+    
+            function handleDragStart(e) {
+                dragSrcElement = this;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.innerHTML);
+            }
+    
+            function handleDragOver(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                return false;
+            }
+    
+            function handleDragEnter(e) {
+                this.classList.add('over');
+            }
+    
+            function handleDragLeave(e) {
+                this.classList.remove('over');
+            }
+    
+            function handleDrop(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation();
+                }
+                if (dragSrcElement !== this) {
+                    dragSrcElement.innerHTML = this.innerHTML;
+                    this.innerHTML = e.dataTransfer.getData('text/html');
+                }
+                return false;
+            }
+    
+            function handleDragEnd(e) {
+                this.classList.remove('over');
+            }
+    
+            const numbers = document.querySelectorAll('.number');
+            numbers.forEach(number => {
+                number.addEventListener('dragstart', handleDragStart);
+                number.addEventListener('dragover', handleDragOver);
+                number.addEventListener('dragenter', handleDragEnter);
+                number.addEventListener('dragleave', handleDragLeave);
+                number.addEventListener('drop', handleDrop );
+                number.addEventListener('dragend', handleDragEnd);
+            });
+        </script>
+    </body>
+</html>

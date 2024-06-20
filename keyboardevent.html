@@ -1,0 +1,18 @@
+<html>
+<head>
+    <title>Event Listner </title>
+</head>
+<body>
+<input type="text" id="inputfield" placeholder="type something....">
+
+<script>
+    const inputfield = document.getElementById('inputfield');
+    inputfield.addEventListener('keydown', function(event){
+    console.log('keydown: '+ event.key)
+    });
+    inputfield.addEventListener('keyup',function(event){
+    console.log('keyup: '+ event.key)
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<form id="myform">
+<input id="inputfield" type="text" placeholder="type something...">
+<button>submit</button>
+</form>
+
+<script>
+    const form = document.getElementById("myform");
+    const input = document.getElementById("inputfield")
+    
+   form.addEventListener('submit', function(event){
+    event.preventDefault();
+    console.log("Submitted the form!");
+   });
+
+   inputfield.addEventListener('input', function(){
+      console.log('input changed: ' +inputfield.value);    
+   });
+
+</script>

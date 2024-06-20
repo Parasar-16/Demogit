@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!--Let keywor-->
+    <h2>Declaring a Variable Using keyword let</h2>
+    <p id="var"></p>
+    <script>
+      let  x = 8;
+     
+      document.getElementById("var").innerHTML = x ;
+    </script>
+
+    <!--var and const keyword-->
+    <h2>Declaring a Variable Using Keyword const</h2>
+    <p id="vari"></p>
+    <script>
+    let  y = 20;
+   
+    document.getElementById("vari").innerHTML = y;
+    </script>
+
+    <!--Arrow-->
+    <h2>JavaScript Arrow Functions</h2>
+    <p id="variable"></p>
+
+    <script>
+    const a = (x, y) => x + y;
+    document.getElementById("variable").innerHTML = a(7, 3);
+    </script>
+
+    <!--(...)Operator-->
+    
+    <h2>The ... Operator</h2>
+    <p id="day"></p>
+    <script>
+    const d1 = ["sun"]
+    const d2 = ["Mon"]
+    const d3 = ["Tue"]
+    const d4 = ["Wed"]
+    const d5 = ["Thu"] 
+    const d6 = ["Fri"]
+    const d7 = ["Sat"]
+    const week = [... d1, ... d2, ... d3, ... d4, ...d5, ...d6, ...d7];
+    document.getElementById("day").innerHTML = week; 
+    </script>
+
+    <!--For of-->
+    <h2>JavaScript For Of Loop</h2>
+    <p id="subj"></p>
+
+    <script>
+    const Subjects = ["Maths", "Science", "Social"];
+    let text = "";
+    for (let x of Subjects) {
+      text += x + "<br>";
+    }
+    document.getElementById("subj").innerHTML = text;
+    </script>
+
+     <!--Maps-->
+     <h2>JavaScript Map Objects</h2>
+     <p id="mark"></p>
+     <script>
+     // Create a Map
+     const Marks = new Map([
+       ["Maths", 90],
+       ["social", 93],
+       ["English", 98]
+     ]);
+     document.getElementById("mark").innerHTML = Marks.get("English");
+     </script>
+
+    <!--Classes-->
+    <h2>JavaScript Classes</h2>
+    <p id="demoo"></p>
+
+    <script>
+    class cricketer {
+      constructor(name, year) {
+        this.name = name;
+        this.year = year;
+      }
+    }
+    const myCrick1 = new cricketer("Rohit", 1985);
+    const myCrick2 = new cricketer("virat", 1987);
+    document.getElementById("demoo").innerHTML =
+    myCrick1.name + " " + myCrick2.name;
+    </script>
+
+    <!--Promises-->
+    <h2>JavaScript Promise</h2>
+    <p>Wait 2 seconds (2000 milliseconds) for this page to change.</p>
+    <h1 id="prom"></h1>
+
+    <script>
+    const myPromise = new Promise(function(myResolve, myReject) {
+      setTimeout(function(){ myResolve("Complete within deadline"); }, 2000);
+    });
+
+    myPromise.then(function(value) {
+      document.getElementById("prom").innerHTML = value;
+    });
+    </script>
+
+    <!--Default Parameters-->
+    <h2>Default Parameter Values</h2>
+    <p>If y is not passed or undefined, then y = 20:</p>
+    <p id="def"></p>
+    <script>
+    function myFunction(x, y = 20) {
+      return x + y;
+    }
+    document.getElementById("def").innerHTML = myFunction(5);
+    </script>
+
+    <!--Rest Parameters-->
+    <h2>The Rest Parameter</h2>
+    <p>The rest parameter (...) allows a function to treat an indefinite number of arguments as an array:</p>
+    <p id="para"></p>
+    <script>
+    function sum(...args) {
+      let sum = 0;
+      for (let arg of args) sum += arg;
+      return sum;
+    }
+    let b = sum(23,32,12,45,67,12,50);
+    document.getElementById("para").innerHTML = b;
+    </script>
+
+    <!--string Methods-->
+    <h2>The includes(), startsWith(), endsWith() Method</h2>
+    <p id="include"></p>
+    <p id="start"></p>
+    <p id="end"></p>
+    <script>
+    let text1 = "Hello everyone, welcome to the class.";
+    document.getElementById("include").innerHTML = text1.includes("world");
+    document.getElementById("start").innerHTML = text1.startsWith("Hello");
+    document.getElementById("end").innerHTML = text1.endsWith("welcome");
+    </script>
+
+    <!--Array Methods-->
+    <h2>The from() Method</h2>
+    <p id="array"></p>
+    <script>
+    const myArr = Array.from("Harsha");
+    document.getElementById("array").innerHTML = myArr;
+    </script>
+    
+    <h2>The keys() Method</h2>
+    <p id="key"></p>
+    <script>
+    const fruit = ["Banana", "Orange", "Apple", "Mango"];
+    const keys = fruit.keys();
+    let text2 = "";
+    for (let x of keys) {
+      text2 += x + "<br>";
+    }
+    document.getElementById("key").innerHTML = text2;
+    </script>
+
+    <h2>The find() Method</h2>
+     <h id="find"></h>
+    <script>
+    const numbers = [3, 8, 18, 34, 50];
+    let first = numbers.find(myFunction);
+    document.getElementById("find").innerHTML = "First number over 25 is " + first;
+    function myFunction(value, index, array) {
+      return value > 25;
+    }
+    </script>
+
+  </body>
+</html>

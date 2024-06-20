@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Parent child events :</title>
+    </head>
+    <body>
+        <div id="parent">
+        Parent
+        <button id="child">click me!</button>
+    </body>
+    <script>
+       document.getElementById('parent').addEventListener('click', () => {
+      alert('Parent div is clicked');
+       });
+
+       document.getElementById('child').addEventListener('click', ()=> {
+        alert('button is clicked');
+       });
+    </script>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <title>Pomodoro Timer</title>
+  <style>
+    #timer {
+      font-size: 200px;
+      text-align: center;
+      background-color: rgb(32, 32, 32);
+      color: white;
+    }
+    #startButton{
+        background-color: rgb(167, 19, 83);
+        color: white;
+        width: 50rem;
+        height: 5rem;
+    }
+    #resetButton{
+        background-color: rgb(13, 205, 167);
+        color: white;
+        width: 50rem;
+        height: 5rem;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="timer">25:00 </div>
+  <button id="startButton">Start</button>
+  <button id="resetButton">Reset</button>
+  <script>
+    let workDuration = 25; // Work duration in minutes
+    let breakDuration = 5; // Break duration in minutes
+    let isWorking = true;
+    let isRunning = false;
+    let timerInterval;
+
+    const timerDisplay = document.getElementById('timer');
+    const startButton = document.getElementById('startButton');
+    const resetButton = document.getElementById('resetButton');
+
+    function updateTimerDisplay(minutes, seconds) {
+      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        startButton.textContent = 'Pause';
+        timerInterval = setInterval(function () {
+          const timeLeft = timerDisplay.textContent.split(':');
+          let minutes = parseInt(timeLeft[0]);
+          let seconds = parseInt(timeLeft[1]);
+
+          if (minutes === 0 && seconds === 0) {
+            if (isWorking) {
+              isWorking = false;
+              minutes = breakDuration;
+            } else {
+              isWorking = true;
+              minutes = workDuration;
+            }
+          }
+
+          if (seconds === 0) {
+            minutes--;
+            seconds = 59;
+          } else {
+            seconds--;
+          }
+
+          updateTimerDisplay(minutes, seconds);
+        }, 1000);
+      } else {
+        isRunning = false;
+        startButton.textContent = 'Resume';
+        clearInterval(timerInterval);
+      }
+    }
+
+    function resetTimer() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      if (isWorking) {
+        updateTimerDisplay(workDuration, 0);
+      } else {
+        updateTimerDisplay(breakDuration, 0);
+      }
+      startButton.textContent = 'Start';
+    }
+
+    startButton.addEventListener('click', startTimer);
+    resetButton.addEventListener('click', resetTimer);
+
+    updateTimerDisplay(workDuration, 0);
+  </script>
+</body>
+</html>

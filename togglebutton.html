@@ -1,0 +1,27 @@
+<button id="toggleButton">Hide Text</button> 
+<p id="textParagraph">This is a paragraph of text.</p>
+
+<script>
+
+document.getElementById('toggleButton').addEventListener('click', function() { 
+ const textParagraph = document. getElementById('textParagraph'); 
+const toggleButton = document.getElementById('toggleButton');
+
+if (textParagraph.style.display = 'none') {
+
+textParagraph.style.display = 'none';
+
+toggleButton.textContent = 'Show Text';
+
+} else {
+
+textParagraph.style.display = 'block'; 
+
+toggleButton.textContent - 'Hide Text';
+
+}
+
+});
+
+</script>
+
