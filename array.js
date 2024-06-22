@@ -1,4 +1,4 @@
-/*let fruits = ["papaya","banana","mango"];
+let fruits = ["papaya","banana","mango"];
 console.log(fruits [0]);
 console.log(fruits [1]);
 console.log(fruits [2]);
@@ -19,8 +19,8 @@ for(let i= 0; i < arr.length;i++)
 for(let fruits of arr)
 {
 console.log(fruits);
-}*/
+}
 
-let num = [1 , 2 , 3 , 4 , 5 , 6, 7,  8, 9, 10]
-let find = num.indexOf(4);
-console.log(find)
+// let num = [1 , 2 , 3 , 4 , 5 , 6, 7,  8, 9, 10]
+// let find = num.indexOf(4);
+// console.log(find)
