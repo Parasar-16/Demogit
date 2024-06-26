@@ -1,0 +1,75 @@
+<html>
+    <title>Javascript Assignment 2</title>
+    <head>Please go to the inspect -> Console 
+        <script>
+            let arr = [1, 2, 3, 4, 5];
+console.log("Joined String: " + arr.join(", "));
+
+arr.push(6, 7);
+console.log("After Push: " + JSON.stringify(arr));
+console.log(arr);
+
+console.log(`length: ${arr.length}`);
+// console.log(arr);
+
+arr.pop();
+console.log("After Pop: " + JSON.stringify(arr));
+console.log(arr);
+
+arr.shift();
+console.log("After Shift: " + JSON.stringify(arr));
+console.log(arr);
+
+arr.unshift(0);
+console.log("After Unshift: " + JSON.stringify(arr));
+console.log(arr);
+
+let slicedArray = arr.slice(1, 4);
+console.log("Sliced Array: " + JSON.stringify(slicedArray));
+console.log(arr);
+
+arr.splice(1, 1, 8, 9);
+console.log("After Splice: " + JSON.stringify(arr));
+console.log(arr);
+
+let indexOf5 = arr.indexOf(5);
+console.log("Index of 5: " + indexOf5);
+
+let exists = arr.includes(3);
+console.log("3 exists in array: " + exists);
+
+arr.reverse();
+console.log("After Reverse: " + JSON.stringify(arr));
+console.log(arr);
+
+arr.sort((a, b) => a - b);
+console.log("After Sort: " + JSON.stringify(arr));
+console.log(arr);
+
+// String methods
+let str = "JavaScript is awesome!";
+let upperCaseStr = str.toUpperCase();
+let lowerCaseStr = str.toLowerCase();
+console.log("Uppercase: " + upperCaseStr);
+console.log("Lowercase: " + lowerCaseStr);
+console.log("Length: " + str.length);
+
+let indexOfIs = str.indexOf("is");
+console.log("Index of 'is': " + indexOfIs);
+
+let substring = str.substring(8, 14);
+console.log("Substring: " + substring);
+
+let replacedStr = str.replace("awesome", "amazing");
+console.log("Replaced String: " + replacedStr);
+
+let splitArray = str.split(" ");
+console.log("Split Array: " + JSON.stringify(splitArray));
+
+splitArray.forEach((value, index) => {
+console.log(`${index}: "${value}"`);
+});
+console.log(splitArray)
+        </script>
+    </head>
+</html>
