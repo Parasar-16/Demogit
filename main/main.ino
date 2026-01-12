@@ -85,14 +85,18 @@ void setup() {
 // - FULL, TURBAN = positive score (safe, 2x weight)
 // - buffer_sum > 0 = GREEN, buffer_sum < 0 = RED, buffer_sum == 0 = ORANGE
 //
-// Examples (2+ detections):
+// Examples:
+// 3 detections (triple riding) -> ALWAYS RED
+// - [FULL, FULL, FULL] -> RED (triple riding)
+// - [FACE, FULL, TURBAN] -> RED (triple riding)
+//
+// 2 detections:
 // - [FULL, FULL] -> ALL safe = GREEN
 // - [FULL, TURBAN] -> ALL safe = GREEN
 // - [FACE, FULL] -> has risk (FACE) = RED
 // - [FACE, FACE] -> has risk = RED
-// - [FACE, FULL, TURBAN] -> has risk (FACE) = RED
 //
-// Single detection uses damping buffer with weighted scores
+// 1 detection: uses damping buffer with weighted scores
 // ============================================================================
 void loop() {
     static uint8_t LEDState = 0;
@@ -152,13 +156,30 @@ void loop() {
             }
 
             // ================================================================
-            // MULTI-DETECTION (2 or 3 persons)
-            // Immediate decision - no damping needed
+            // TRIPLE DETECTION (3 persons) - Always RED (triple riding)
             // ================================================================
-            if (detectionCount >= 2) {
+            if (detectionCount >= 3) {
+                Serial.printf(">>> TRIPLE RIDING (%d persons) = RED\n", detectionCount);
+                LEDState = (1 << 0);  // RED
+                HooterState = 1;
+
+                // Push negative score to buffer for consistency
+                newScore = -100 * detectionCount;
+
+                // Update buffer
+                buffer_sum -= buffer[buffer_index];
+                buffer[buffer_index] = newScore;
+                buffer_sum += newScore;
+                buffer_index = (buffer_index + 1) % BUFFER_SIZE;
+            }
+            // ================================================================
+            // DOUBLE DETECTION (2 persons)
+            // If ANY is risky = RED, ALL safe = GREEN
+            // ================================================================
+            else if (detectionCount == 2) {
                 if (hasRisk) {
                     // Any risky label = RED
-                    Serial.printf(">>> MULTI (%d): HAS RISK = RED\n", detectionCount);
+                    Serial.printf(">>> DOUBLE (%d): HAS RISK = RED\n", detectionCount);
                     LEDState = (1 << 0);  // RED
                     HooterState = 1;
 
@@ -166,7 +187,7 @@ void loop() {
                     newScore = -100 * detectionCount;
                 } else {
                     // All safe (FULL/TURBAN only) = GREEN
-                    Serial.printf(">>> MULTI (%d): ALL SAFE = GREEN\n", detectionCount);
+                    Serial.printf(">>> DOUBLE (%d): ALL SAFE = GREEN\n", detectionCount);
                     LEDState = (1 << 1);  // GREEN
                     HooterState = 0;
 
