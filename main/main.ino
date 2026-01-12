@@ -85,11 +85,14 @@ void setup() {
 // - FULL, TURBAN = positive score (safe, 2x weight)
 // - buffer_sum > 0 = GREEN, buffer_sum < 0 = RED, buffer_sum == 0 = ORANGE
 //
-// Examples:
-// - [FULL, FULL] = (80*2) + (75*2) = +310 -> GREEN
-// - [FACE, FULL] = (80*-1) + (75*2) = +70 -> trends GREEN (but damping applies)
-// - [FACE, FACE] = (80*-1) + (75*-1) = -155 -> RED
-// - [FACE, FULL, HALF] = (80*-1) + (75*2) + (70*-1) = -80 -> RED
+// Examples (2+ detections):
+// - [FULL, FULL] -> ALL safe = GREEN
+// - [FULL, TURBAN] -> ALL safe = GREEN
+// - [FACE, FULL] -> has risk (FACE) = RED
+// - [FACE, FACE] -> has risk = RED
+// - [FACE, FULL, TURBAN] -> has risk (FACE) = RED
+//
+// Single detection uses damping buffer with weighted scores
 // ============================================================================
 void loop() {
     static uint8_t LEDState = 0;
@@ -125,9 +128,9 @@ void loop() {
             Serial.println();
 
             // ================================================================
-            // MULTI-DETECTION LOGIC (2 or 3 persons)
-            // - If ANY detection is risky (FACE, FAKE_TURBAN, HALF) = RED
-            // - Only if ALL detections are safe (FULL, TURBAN) = GREEN
+            // DETECTION LOGIC
+            // For 2+ detections: If ANY is risky = RED, ALL safe = GREEN
+            // For 1 detection: Use damping buffer with weighted score
             // ================================================================
             bool hasRisk = false;
             int newScore = 0;
@@ -137,43 +140,75 @@ void loop() {
                 uint8_t label = AI.boxes()[i].target;
                 int score = AI.boxes()[i].score;
 
-                // Calculate weighted score for this detection
-                int weightedScore = 0;
-                if (label < 5) {
-                    weightedScore = score * BufferDirection[label];
-                }
-                newScore += weightedScore;
-
                 // Check if this is a risky detection (FACE, FAKE_TURBAN, HALF)
                 if (label == FACE || label == FAKE_TURBAN || label == HALF) {
                     hasRisk = true;
                 }
+
+                // Calculate weighted score for damping (single detection only)
+                if (detectionCount == 1 && label < 5) {
+                    newScore = score * BufferDirection[label];
+                }
             }
 
-            // Update damping buffer with combined score
-            buffer_sum -= buffer[buffer_index];
-            buffer[buffer_index] = newScore;
-            buffer_sum += newScore;
-            buffer_index = (buffer_index + 1) % BUFFER_SIZE;
+            // ================================================================
+            // MULTI-DETECTION (2 or 3 persons)
+            // Immediate decision - no damping needed
+            // ================================================================
+            if (detectionCount >= 2) {
+                if (hasRisk) {
+                    // Any risky label = RED
+                    Serial.printf(">>> MULTI (%d): HAS RISK = RED\n", detectionCount);
+                    LEDState = (1 << 0);  // RED
+                    HooterState = 1;
 
-            // Determine state based on buffer_sum
-            if (buffer_sum > 0) {
-                Serial.printf(">>> Status: SAFE (GREEN LED) - score: %d, sum: %d\n",
-                              newScore, buffer_sum);
-                LEDState = (1 << 1);  // GREEN
-                HooterState = 0;
+                    // Push negative score to buffer for consistency
+                    newScore = -100 * detectionCount;
+                } else {
+                    // All safe (FULL/TURBAN only) = GREEN
+                    Serial.printf(">>> MULTI (%d): ALL SAFE = GREEN\n", detectionCount);
+                    LEDState = (1 << 1);  // GREEN
+                    HooterState = 0;
+
+                    // Push positive score to buffer for consistency
+                    newScore = 100 * detectionCount;
+                }
+
+                // Update buffer
+                buffer_sum -= buffer[buffer_index];
+                buffer[buffer_index] = newScore;
+                buffer_sum += newScore;
+                buffer_index = (buffer_index + 1) % BUFFER_SIZE;
             }
-            else if (buffer_sum < 0) {
-                Serial.printf(">>> Status: RISK (RED LED) - score: %d, sum: %d\n",
-                              newScore, buffer_sum);
-                LEDState = (1 << 0);  // RED
-                HooterState = 1;
-            }
+            // ================================================================
+            // SINGLE DETECTION - Use damping buffer
+            // ================================================================
             else {
-                Serial.printf(">>> Status: NEUTRAL (ORANGE LED) - score: %d, sum: %d\n",
-                              newScore, buffer_sum);
-                LEDState = (1 << 3);  // ORANGE
-                HooterState = 0;
+                // Update damping buffer
+                buffer_sum -= buffer[buffer_index];
+                buffer[buffer_index] = newScore;
+                buffer_sum += newScore;
+                buffer_index = (buffer_index + 1) % BUFFER_SIZE;
+
+                // Determine state based on buffer_sum
+                if (buffer_sum > 0) {
+                    Serial.printf(">>> SINGLE: SAFE (GREEN) - score: %d, sum: %d\n",
+                                  newScore, buffer_sum);
+                    LEDState = (1 << 1);  // GREEN
+                    HooterState = 0;
+                }
+                else if (buffer_sum < 0) {
+                    Serial.printf(">>> SINGLE: RISK (RED) - score: %d, sum: %d\n",
+                                  newScore, buffer_sum);
+                    LEDState = (1 << 0);  // RED
+                    HooterState = 1;
+                }
+                else {
+                    Serial.printf(">>> SINGLE: NEUTRAL (ORANGE) - score: %d, sum: %d\n",
+                                  newScore, buffer_sum);
+                    LEDState = (1 << 3);  // ORANGE
+                    HooterState = 0;
+                }
             }
         }
         else {
